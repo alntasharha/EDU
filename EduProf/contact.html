@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - EduProf</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .contact-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9)),
+                        url('https://images.unsplash.com/photo-1516321318423-f06f85e764ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80') center/cover;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 20px;
+            margin-top: 70px;
+        }
+        
+        .contact-header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+        }
+        
+        .contact-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .contact-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .contact-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .contact-icon {
+            background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%);
+        }
+        
+        .switch-icon {
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
+        }
+        
+        .card-title {
+            flex: 1;
+        }
+        
+        .card-title h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+        
+        .card-title p {
+            margin: 5px 0 0 0;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .btn-submit {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .teacher-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        
+        .teacher-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .teacher-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .teacher-item.selected {
+            background: #e3f2fd;
+            border: 2px solid #3498db;
+        }
+        
+        .teacher-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .teacher-info {
+            flex: 1;
+        }
+        
+        .teacher-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .teacher-subject {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .student-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .student-info h3 {
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .current-student {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .current-student strong {
+            color: #3498db;
+            font-size: 1.1rem;
+        }
+        
+        .btn-change-student {
+            background: #f39c12;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-change-student:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+        
+        .success-message {
+            background: #d5f4e6;
+            color: #27ae60;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .error-message {
+            background: #fadbd8;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .contact-header h1 {
+                font-size: 2rem;
+            }
+            
+            .contact-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EduProf</span>
+            </a>
+            <div class="user-info">
+                <a href="index.html" class="home-btn">
+                    <i class="fas fa-home"></i> Accueil
+                </a>
+                <a href="student-home.html" class="btn btn-secondary">
+                    <i class="fas fa-user-graduate"></i> Espace Élève
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="contact-container">
+        <!-- Header -->
+        <div class="contact-header">
+            <h1><i class="fas fa-comments"></i> Contact</h1>
+            <p>Contactez vos professeurs ou changez d'élève</p>
+        </div>
+        
+        <!-- Student Info -->
+        <div class="student-info">
+            <h3>Élève Actuel</h3>
+            <div class="current-student">
+                <strong id="currentStudentName">Non connecté</strong>
+            </div>
+            <button class="btn-change-student" onclick="changeStudent()">
+                <i class="fas fa-exchange-alt"></i> Changer d'élève
+            </button>
+        </div>
+        
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Contact Form -->
+            <div class="contact-card">
+                <div class="card-header">
+                    <div class="card-icon contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Contacter un Professeur</h3>
+                        <p>Envoyez un message à votre professeur</p>
+                    </div>
+                </div>
+                
+                <div id="messageContainer"></div>
+                
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="teacherSelect">Choisir un professeur *</label>
+                        <div class="teacher-list" id="teacherList">
+                            <!-- Teachers will be dynamically loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Sujet *</label>
+                        <input type="text" id="subject" placeholder="Ex: Question sur le chapitre 3" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" placeholder="Écrivez votre message ici..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i> Envoyer le message
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Switch Student -->
+            <div class="contact-card">
+                <div class="card-header">
+                    <div class="card-icon switch-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Changer d'Élève</h3>
+                        <p>Connectez-vous en tant qu'un autre élève</p>
+                    </div>
+                </div>
+                
+                <form id="switchStudentForm">
+                    <div class="form-group">
+                        <label for="newStudentName">Nom de l'élève *</label>
+                        <input type="text" id="newStudentName" placeholder="Entrez votre nom complet" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studentClass">Classe *</label>
+                        <select id="studentClass" required>
+                            <option value="">Sélectionner une classe</option>
+                            <option value="6eme">6ème</option>
+                            <option value="5eme">5ème</option>
+                            <option value="4eme">4ème</option>
+                            <option value="3eme">3ème</option>
+                            <option value="2nde">2nde</option>
+                            <option value="1ere">1ère</option>
+                            <option value="Term">Terminale</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studentEmail">Email (optionnel)</label>
+                        <input type="email" id="studentEmail" placeholder="votre.email@example.com">
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-exchange-alt"></i> Changer d'élève
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="contact.js"></script>
+</body>
+</html>

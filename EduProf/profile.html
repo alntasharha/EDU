@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - EduProf</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .profile-header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 4rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .avatar-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #667eea;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid white;
+            transition: transform 0.3s;
+        }
+        
+        .avatar-upload:hover {
+            transform: scale(1.1);
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .profile-role {
+            color: #667eea;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .profile-email {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .profile-info {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .info-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+        }
+        
+        .btn-edit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .btn-edit:hover {
+            transform: translateY(-2px);
+        }
+        
+        .info-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .info-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .info-content h4 {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .info-content p {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            color: #667eea;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-2px);
+        }
+        
+        .edit-form {
+            display: none;
+        }
+        
+        .edit-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #666;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .info-display {
+            display: block;
+        }
+        
+        .info-display.hidden {
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .profile-container {
+                padding: 10px;
+            }
+            
+            .profile-header {
+                padding: 25px;
+            }
+            
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+                font-size: 3rem;
+            }
+            
+            .profile-name {
+                font-size: 1.5rem;
+            }
+            
+            .profile-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <a href="dashboard.html" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Retour au Tableau de Bord
+        </a>
+        
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">
+                <i class="fas fa-user" id="avatarIcon"></i>
+                <img id="avatarImg" style="display: none;">
+                <div class="avatar-upload" onclick="uploadAvatar()">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarChange(event)">
+            </div>
+            <h1 class="profile-name" id="profileName">Chargement...</h1>
+            <p class="profile-role" id="profileRole">Professeur</p>
+            <p class="profile-email" id="profileEmail">...</p>
+            
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="statClasses">0</div>
+                    <div class="stat-label">Classes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statStudents">0</div>
+                    <div class="stat-label">Élèves</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statCourses">0</div>
+                    <div class="stat-label">Cours</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statExams">0</div>
+                    <div class="stat-label">Examens</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-info">
+            <div class="info-header">
+                <h2 class="info-title"><i class="fas fa-info-circle"></i> Informations Personnelles</h2>
+                <button class="btn-edit" onclick="toggleEdit()">
+                    <i class="fas fa-pen"></i> Modifier
+                </button>
+            </div>
+            
+            <div class="info-display" id="infoDisplay">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-user"></i></div>
+                        <div class="info-content">
+                            <h4>Nom Complet</h4>
+                            <p id="displayName">-</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="info-content">
+                            <h4>Email</h4>
+                            <p id="displayEmail">-</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-school"></i></div>
+                        <div class="info-content">
+                            <h4>Établissement</h4>
+                            <p id="displaySchool">-</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-book"></i></div>
+                        <div class="info-content">
+                            <h4>Matière Principale</h4>
+                            <p id="displaySubject">-</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-calendar"></i></div>
+                        <div class="info-content">
+                            <h4>Membre Depuis</h4>
+                            <p id="displayDate">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <form class="edit-form" id="editForm">
+                <div class="form-group">
+                    <label for="editNom">Nom</label>
+                    <input type="text" id="editNom" name="nom" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPrenom">Prénom</label>
+                    <input type="text" id="editPrenom" name="prenom" required>
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email</label>
+                    <input type="email" id="editEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="editEtablissement">Établissement</label>
+                    <input type="text" id="editEtablissement" name="etablissement" required>
+                </div>
+                <div class="form-group">
+                    <label for="editMatiere">Matière</label>
+                    <select id="editMatiere" name="matiere" required>
+                        <option value="maths">Mathématiques</option>
+                        <option value="francais">Français</option>
+                        <option value="histoire">Histoire-Géographie</option>
+                        <option value="svt">SVT</option>
+                        <option value="physique">Physique-Chimie</option>
+                        <option value="anglais">Anglais</option>
+                        <option value="espagnol">Espagnol</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                <button type="button" class="btn-save" onclick="saveProfile()">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+                <button type="button" class="btn-cancel" onclick="toggleEdit()">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Charger le profil
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfile();
+            loadStats();
+        });
+        
+        function loadProfile() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (!currentUser) {
+                alert('Veuillez vous connecter');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Afficher les infos
+            document.getElementById('profileName').textContent = `${currentUser.prenom} ${currentUser.nom}`;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            document.getElementById('displayName').textContent = `${currentUser.prenom} ${currentUser.nom}`;
+            document.getElementById('displayEmail').textContent = currentUser.email;
+            document.getElementById('displaySchool').textContent = currentUser.etablissement || 'Non défini';
+            document.getElementById('displaySubject').textContent = formatMatiere(currentUser.matiere);
+            document.getElementById('displayDate').textContent = formatDate(currentUser.createdAt);
+            
+            // Pré-remplir le formulaire
+            document.getElementById('editNom').value = currentUser.nom;
+            document.getElementById('editPrenom').value = currentUser.prenom;
+            document.getElementById('editEmail').value = currentUser.email;
+            document.getElementById('editEtablissement').value = currentUser.etablissement || '';
+            document.getElementById('editMatiere').value = currentUser.matiere || 'maths';
+            
+            // Charger l'avatar
+            const savedAvatar = localStorage.getItem(`avatar_${currentUser.id}`);
+            if (savedAvatar) {
+                document.getElementById('avatarImg').src = savedAvatar;
+                document.getElementById('avatarImg').style.display = 'block';
+                document.getElementById('avatarIcon').style.display = 'none';
+            }
+        }
+        
+        function loadStats() {
+            const classes = JSON.parse(localStorage.getItem('classes') || '[]');
+            const courses = JSON.parse(localStorage.getItem('courses') || '[]');
+            const exams = JSON.parse(localStorage.getItem('exams') || '[]');
+            
+            // Compter les élèves
+            let totalStudents = 0;
+            classes.forEach(c => {
+                totalStudents += (c.students ? c.students.length : 0);
+            });
+            
+            document.getElementById('statClasses').textContent = classes.length;
+            document.getElementById('statStudents').textContent = totalStudents;
+            document.getElementById('statCourses').textContent = courses.length;
+            document.getElementById('statExams').textContent = exams.length;
+        }
+        
+        function toggleEdit() {
+            const display = document.getElementById('infoDisplay');
+            const form = document.getElementById('editForm');
+            
+            display.classList.toggle('hidden');
+            form.classList.toggle('active');
+        }
+        
+        function saveProfile() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            // Mettre à jour les données
+            currentUser.nom = document.getElementById('editNom').value;
+            currentUser.prenom = document.getElementById('editPrenom').value;
+            currentUser.email = document.getElementById('editEmail').value;
+            currentUser.etablissement = document.getElementById('editEtablissement').value;
+            currentUser.matiere = document.getElementById('editMatiere').value;
+            
+            // Mettre à jour dans users
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+            }
+            
+            // Sauvegarder
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Recharger l'affichage
+            loadProfile();
+            toggleEdit();
+            
+            alert('Profil mis à jour avec succès !');
+        }
+        
+        function uploadAvatar() {
+            document.getElementById('avatarInput').click();
+        }
+        
+        function handleAvatarChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                localStorage.setItem(`avatar_${currentUser.id}`, e.target.result);
+                
+                document.getElementById('avatarImg').src = e.target.result;
+                document.getElementById('avatarImg').style.display = 'block';
+                document.getElementById('avatarIcon').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function formatMatiere(matiere) {
+            const matieres = {
+                'maths': 'Mathématiques',
+                'francais': 'Français',
+                'histoire': 'Histoire-Géographie',
+                'svt': 'SVT',
+                'physique': 'Physique-Chimie',
+                'anglais': 'Anglais',
+                'espagnol': 'Espagnol',
+                'autre': 'Autre'
+            };
+            return matieres[matiere] || matiere;
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'Non disponible';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+    </script>
+</body>
+</html>

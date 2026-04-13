@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ressources Pédagogiques - EduProf</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .resources-container {
+            display: flex;
+            min-height: 100vh;
+            margin-top: 70px;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+        
+        .sidebar h3 {
+            margin-bottom: 30px;
+            color: #3498db;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: #3498db;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .resources-header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .resources-header h1 {
+            color: #2c3e50;
+        }
+        
+        .upload-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-area:hover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+        
+        .upload-area.dragover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .btn-upload {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn-upload:hover {
+            background: #2980b9;
+        }
+        
+        .resource-form {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e1e8ed;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .btn-cancel {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+        
+        .resources-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-header h2 {
+            color: #2c3e50;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .filter-search {
+            position: relative;
+        }
+        
+        .filter-search input {
+            padding: 8px 35px 8px 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 5px;
+            width: 250px;
+        }
+        
+        .filter-search i {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 5px;
+            background: white;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .resource-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .resource-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .resource-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .resource-icon.pdf {
+            background: #f44336;
+            color: white;
+        }
+        
+        .resource-icon.doc {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .resource-icon.video {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .resource-icon.image {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .resource-icon.other {
+            background: #9c27b0;
+            color: white;
+        }
+        
+        .resource-info {
+            flex: 1;
+        }
+        
+        .resource-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .resource-meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .resource-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .resource-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .resource-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn-download {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-share {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-edit {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .resources-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .filter-search input {
+                width: 100%;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EduProf</span>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">P</div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="resources-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3>Ressources</h3>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Tableau de bord</a></li>
+                <li><a href="#resources" class="active"><i class="fas fa-file-alt"></i> Mes Ressources</a></li>
+                <li><a href="#shared"><i class="fas fa-share"></i> Partagées</a></li>
+                <li><a href="#favorites"><i class="fas fa-star"></i> Favoris</a></li>
+                <li><a href="#trash"><i class="fas fa-trash"></i> Corbeille</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="resources-header">
+                <h1>Ressources Pédagogiques</h1>
+                <div class="user-info">
+                    <div>
+                        <div id="userName">Professeur</div>
+                        <div id="userEmail">prof@ecole.fr</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                        <h3>Déposez vos fichiers ici</h3>
+                        <p>ou cliquez pour parcourir vos fichiers</p>
+                    </div>
+                    <button class="btn-upload" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-plus"></i> Ajouter une ressource
+                    </button>
+                    <input type="file" id="fileInput" style="display: none;" multiple>
+                </div>
+
+                <!-- Resource Form -->
+                <div class="resource-form" id="resourceForm">
+                    <h3>Ajouter une nouvelle ressource</h3>
+                    <form id="addResourceForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="resourceTitle">Titre *</label>
+                                <input type="text" id="resourceTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="resourceType">Type *</label>
+                                <select id="resourceType" required>
+                                    <option value="">Sélectionner un type</option>
+                                    <option value="pdf">PDF</option>
+                                    <option value="doc">Document Word</option>
+                                    <option value="video">Vidéo</option>
+                                    <option value="image">Image</option>
+                                    <option value="other">Autre</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="resourceSubject">Matière *</label>
+                                <select id="resourceSubject" required>
+                                    <option value="">Sélectionner une matière</option>
+                                    <option value="maths">Mathématiques</option>
+                                    <option value="francais">Français</option>
+                                    <option value="histoire">Histoire-Géographie</option>
+                                    <option value="svt">SVT</option>
+                                    <option value="physique">Physique-Chimie</option>
+                                    <option value="anglais">Anglais</option>
+                                    <option value="espagnol">Espagnol</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="resourceLevel">Niveau *</label>
+                                <select id="resourceLevel" required>
+                                    <option value="">Sélectionner un niveau</option>
+                                    <option value="6eme">6ème</option>
+                                    <option value="5eme">5ème</option>
+                                    <option value="4eme">4ème</option>
+                                    <option value="3eme">3ème</option>
+                                    <option value="2nde">2nde</option>
+                                    <option value="1ere">1ère</option>
+                                    <option value="term">Terminale</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="resourceDescription">Description</label>
+                            <textarea id="resourceDescription" placeholder="Décrivez votre ressource..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="resourceTags">Tags (séparez par des virgules)</label>
+                            <input type="text" id="resourceTags" placeholder="ex: exercices, révision, evaluation">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel" onclick="hideResourceForm()">Annuler</button>
+                            <button type="submit" class="btn-upload">Ajouter la ressource</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Resources Section -->
+            <div class="resources-section">
+                <div class="section-header">
+                    <h2>Mes Ressources</h2>
+                    <div class="filter-controls">
+                        <div class="filter-search">
+                            <input type="text" id="searchInput" placeholder="Rechercher...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <select class="filter-select" id="typeFilter">
+                            <option value="">Tous les types</option>
+                            <option value="pdf">PDF</option>
+                            <option value="doc">Document</option>
+                            <option value="video">Vidéo</option>
+                            <option value="image">Image</option>
+                            <option value="other">Autre</option>
+                        </select>
+                        <select class="filter-select" id="subjectFilter">
+                            <option value="">Toutes les matières</option>
+                            <option value="maths">Mathématiques</option>
+                            <option value="francais">Français</option>
+                            <option value="histoire">Histoire</option>
+                            <option value="svt">SVT</option>
+                            <option value="physique">Physique</option>
+                            <option value="anglais">Anglais</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="resources-grid" id="resourcesGrid">
+                    <!-- Resources will be dynamically added here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="resources.js"></script>
+</body>
+</html>

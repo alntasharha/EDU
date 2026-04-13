@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passer un Examen - EduProf</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .exam-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .exam-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .exam-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2rem;
+        }
+        
+        .exam-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .exam-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .exam-info-item i {
+            font-size: 1.2rem;
+        }
+        
+        .timer-container {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .timer-container.warning {
+            background: #f39c12;
+        }
+        
+        .timer-container.danger {
+            background: #e74c3c;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .exam-content {
+            padding: 30px;
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        
+        .questions-container {
+            margin-bottom: 30px;
+        }
+        
+        .question-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .question-number {
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option-item:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+        
+        .option-item.selected {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+        
+        .option-item input[type="radio"],
+        .option-item input[type="checkbox"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+        
+        .option-text {
+            flex: 1;
+            font-size: 1rem;
+        }
+        
+        .option-label {
+            font-weight: bold;
+            color: #3498db;
+            margin-right: 10px;
+            min-width: 30px;
+        }
+        
+        .text-answer-container {
+            margin-top: 15px;
+        }
+        
+        .text-answer {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        .text-answer:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .true-false-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .true-false-option {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .true-false-option:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+        
+        .true-false-option.selected {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+        
+        .true-option {
+            color: #27ae60;
+        }
+        
+        .false-option {
+            color: #e74c3c;
+        }
+        
+        .exam-actions {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e1e8ed;
+        }
+        
+        .btn-submit {
+            background: #27ae60;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+        
+        .btn-submit:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .progress-bar {
+            background: #e1e8ed;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .btn-nav {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-nav:hover {
+            background: #2980b9;
+        }
+        
+        .btn-nav:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .question-counter {
+            text-align: center;
+            color: #666;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+        
+        .confirmation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .modal-content h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn-confirm {
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .btn-cancel {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .exam-container {
+                margin: 10px;
+            }
+            
+            .exam-header {
+                padding: 20px;
+            }
+            
+            .exam-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .exam-info {
+                gap: 15px;
+            }
+            
+            .exam-content {
+                padding: 20px;
+            }
+            
+            .question-card {
+                padding: 20px;
+            }
+            
+            .true-false-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="exam-container">
+        <!-- Exam Header -->
+        <div class="exam-header">
+            <h1 id="examTitle">Chargement...</h1>
+            <div class="exam-info">
+                <div class="exam-info-item">
+                    <i class="fas fa-user"></i>
+                    <span id="studentName">Élève</span>
+                </div>
+                <div class="exam-info-item">
+                    <i class="fas fa-book"></i>
+                    <span id="examSubject">Matière</span>
+                </div>
+                <div class="exam-info-item">
+                    <i class="fas fa-clock"></i>
+                    <span id="examDuration">60 min</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer-container" id="timerContainer">
+            <i class="fas fa-clock"></i>
+            <span id="timer">Temps restant: --:--</span>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="exam-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Progression: 0%</div>
+            
+            <!-- Instructions -->
+            <div class="instructions" id="instructions">
+                <h3>Instructions</h3>
+                <p id="instructionsText">Chargement des instructions...</p>
+            </div>
+
+            <!-- Questions Counter -->
+            <div class="question-counter" id="questionCounter">
+                Question 1 sur 1
+            </div>
+
+            <!-- Questions Container -->
+            <div class="questions-container" id="questionsContainer">
+                <!-- Questions will be dynamically loaded here -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="navigation-buttons">
+                <button class="btn-nav" id="prevBtn" onclick="previousQuestion()" disabled>
+                    <i class="fas fa-arrow-left"></i> Précédent
+                </button>
+                <button class="btn-nav" id="nextBtn" onclick="nextQuestion()">
+                    Suivant <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="exam-actions">
+            <button class="btn-submit" id="submitBtn" onclick="showConfirmation()">
+                <i class="fas fa-paper-plane"></i> Soumettre la réponse
+            </button>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="confirmation-modal" id="confirmationModal">
+        <div class="modal-content">
+            <h3>Confirmer la soumission</h3>
+            <p>Êtes-vous sûr de vouloir soumettre vos réponses? Cette action est irréversible.</p>
+            <p><strong>Questions répondues: <span id="answeredCount">0</span> sur <span id="totalQuestions">0</span></strong></p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="hideConfirmation()">Annuler</button>
+                <button class="btn-confirm" onclick="submitExam()">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="take-exam.js"></script>
+</body>
+</html>

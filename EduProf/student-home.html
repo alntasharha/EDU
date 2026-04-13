@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Élève - EduProf</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .student-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9)),
+                        url('https://images.unsplash.com/photo-1523580494863-6f3031224c94a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80') center/cover;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 20px;
+        }
+        
+        .student-header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+        }
+        
+        .student-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .student-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .student-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .student-info h3 {
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .student-info input {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            width: 250px;
+            text-align: center;
+            margin: 10px;
+        }
+        
+        .student-info input:focus {
+            outline: none;
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        
+        /* Student Avatar */
+        .student-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 3rem;
+            color: white;
+            border: 5px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .student-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .student-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .student-avatar .avatar-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .student-avatar:hover .avatar-overlay {
+            opacity: 1;
+        }
+        
+        /* Photo Modal */
+        .photo-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .photo-modal.active {
+            display: flex;
+        }
+        
+        .photo-modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .photo-modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .photo-modal-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #667eea;
+            border: 5px solid rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .photo-modal-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-upload-area {
+            border: 3px dashed #e1e8ed;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .photo-upload-area:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+        
+        .photo-upload-area i {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .photo-modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            padding: 20px;
+            border-top: 1px solid #e1e8ed;
+        }
+        
+        .btn-photo-save {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .btn-photo-cancel {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .btn-photo-remove {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 20px;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .content-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .exam-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .course-icon {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        }
+        
+        .card-title {
+            flex: 1;
+        }
+        
+        .card-title h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+        
+        .card-title p {
+            margin: 5px 0 0 0;
+            color: #666;
+        }
+        
+        .item-list {
+            margin: 20px 0;
+        }
+        
+        .item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3498db;
+            transition: all 0.3s;
+        }
+        
+        .item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .item.exam {
+            border-left-color: #667eea;
+        }
+        
+        .item.course {
+            border-left-color: #27ae60;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .item-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .item-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .item-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-available {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+        
+        .status-completed {
+            background: #fef5e7;
+            color: #f39c12;
+        }
+        
+        .status-upcoming {
+            background: #e3f2fd;
+            color: #3498db;
+        }
+        
+        .btn-action {
+            background: #3498db;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-action:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-action.exam {
+            background: #667eea;
+        }
+        
+        .btn-action.exam:hover {
+            background: #5a67d8;
+        }
+        
+        .btn-action.course {
+            background: #27ae60;
+        }
+        
+        .btn-action.course:hover {
+            background: #229954;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .student-header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EduProf</span>
+            </a>
+            <div class="user-info">
+                <a href="index.html" class="home-btn">
+                    <i class="fas fa-home"></i> Accueil
+                </a>
+                <a href="contact.html" class="btn btn-secondary">
+                    <i class="fas fa-envelope"></i> Contact
+                </a>
+                <div style="color: #666; font-size: 0.9rem;">
+                    Élève: <span id="studentNameDisplay">Non connecté</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+        <div class="student-container">
+        <!-- Header -->
+        <div class="student-header">
+            <h1><i class="fas fa-graduation-cap"></i> Espace Élève</h1>
+            <p>Accédez à vos examens et cours</p>
+        </div>
+        
+        <!-- Student Info -->
+        <div class="student-info">
+            <div class="student-avatar" id="studentAvatar" onclick="openStudentPhotoModal()">
+                <img id="studentAvatarImg" style="display: none;">
+                <span id="studentAvatarInitial">E</span>
+                <div class="avatar-overlay">
+                    <i class="fas fa-camera"></i>
+                </div>
+            </div>
+            <h3>Votre Identité</h3>
+            <p>Entrez votre nom et ajoutez votre photo</p>
+            <input type="text" id="studentName" placeholder="Votre nom..." onchange="saveStudentName()">
+        </div>
+        
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Exams Section -->
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon exam-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Mes Examens</h3>
+                        <p>Examens disponibles et résultats</p>
+                    </div>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-number" id="availableExams">0</div>
+                        <div class="stat-label">Disponibles</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="completedExams">0</div>
+                        <div class="stat-label">Complétés</div>
+                    </div>
+                </div>
+                
+                <div class="item-list" id="examsList">
+                    <!-- Exams will be dynamically loaded here -->
+                </div>
+            </div>
+            
+            <!-- Courses Section -->
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon course-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Mes Cours</h3>
+                        <p>Cours et documents à consulter</p>
+                    </div>
+                </div>
+                
+                <div class="hero-buttons">
+                    <a href="#inscription" class="btn btn-primary btn-large">Commencer Gratuitement</a>
+                    <a href="#fonctionnalités" class="btn btn-secondary btn-large">En Savoir Plus</a>
+                    <a href="student-home.html" class="btn btn-secondary btn-large">Espace Élève</a>
+                    <a href="contact.html" class="btn btn-secondary btn-large">Contact</a>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalCourses">0</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="downloadedCourses">0</div>
+                        <div class="stat-label">Téléchargés</div>
+                    </div>
+                </div>
+                
+                <div class="item-list" id="coursesList">
+                    <!-- Courses will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Modal -->
+    <div class="photo-modal" id="photoModal" onclick="closePhotoModalOnOutside(event)">
+        <div class="photo-modal-content" onclick="event.stopPropagation()">
+            <div class="photo-modal-header">
+                <div class="photo-modal-avatar" id="modalStudentAvatar">
+                    <img id="modalStudentAvatarImg" style="display: none;">
+                    <span id="modalStudentAvatarInitial">E</span>
+                </div>
+                <h3>Ma Photo de Profil</h3>
+            </div>
+            
+            <input type="file" id="studentPhotoInput" accept="image/*" style="display: none;" onchange="handleStudentPhotoUpload(event)">
+            
+            <div class="photo-upload-area" onclick="document.getElementById('studentPhotoInput').click()" ondragover="event.preventDefault(); this.style.borderColor='#667eea'; this.style.background='#f0f4ff';" ondragleave="this.style.borderColor='#e1e8ed'; this.style.background='transparent';" ondrop="handleStudentPhotoDrop(event)">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p style="margin: 0; color: #666;">Cliquez ou glissez une photo</p>
+                <small style="color: #999;">JPG, PNG - Max 5MB</small>
+            </div>
+            
+            <button class="btn-photo-remove" id="removeStudentPhotoBtn" onclick="removeStudentPhoto()" style="display: none;">
+                <i class="fas fa-trash"></i> Supprimer la photo
+            </button>
+            
+            <div class="photo-modal-actions">
+                <button class="btn-photo-cancel" onclick="closeStudentPhotoModal()">Annuler</button>
+                <button class="btn-photo-save" onclick="saveStudentPhoto()">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="student-home.js"></script>
+</body>
+</html>
